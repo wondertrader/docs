@@ -1,1 +1,4 @@
 urllib3==1.26.15
+sphinx_markdown_tables
+sphinx_rtd_theme
+recommonmark
