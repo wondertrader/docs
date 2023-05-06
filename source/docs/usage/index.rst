@@ -5,8 +5,10 @@
     :maxdepth: 1
 
     tutorial
-    devenv
     histdata
     mystrategy
     optimizer
     product
+    hftstra
+    selstra
+    wtexecmon
