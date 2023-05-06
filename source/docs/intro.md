@@ -1,12 +1,6 @@
 # **WonderTrader**简介
 
-![WonderTrader2.png](./images/logo_qcode_noad.jpg)
-<p align="center">
-    <img src ="https://img.shields.io/badge/version-0.9.8-blueviolet.svg"/>
-    <img src ="https://img.shields.io/badge/platform-windows|linux-yellow.svg"/>
-    <img src ="https://img.shields.io/badge/build-passing-brightgreen"/>
-    <img src ="https://img.shields.io/badge/license-MIT-orange"/>
-</p>
+![](./images/logo_qcode_noad.jpg)
 
 #### `WonderTrader`是什么
 * `WonderTrader`是一个基于`C++`核心模块的，适应全市场**全品种**交易的，**高效率**、**高可用**的量化交易开发框架。
@@ -18,16 +12,16 @@
 
 
 * `WonderTrader`的实盘运行架构
-    ![WonderTrader实盘运行架构.png](./images/prod_struture.png)
+    ![](./images/prod_struture.png)
 
 #### `WonderTrader`的优势
 * **丰富的交易引擎**
     > - **CTA引擎**，也叫**同步策略引擎**，一般适用于标的较少，计算逻辑较快的策略，事件+时间驱动。典型的应用场景包括单标的择时、中频以下的套利等。Demo中提供的DualThrust策略，单次重算平均耗时，Python实现版本约70多微秒，C++实现版本约4.5微秒。
-    ![CTA.jpg](./images/cta.jpg)
+    ![](./images/cta.jpg)
     > - **SEL引擎**，也叫**异步策略引擎**，一般适用于标的较多，计算逻辑耗时较长的策略，时间驱动。典型应用场景包括多因子选股策略、截面多空策略等。
     > - **HFT引擎**，也叫**高频策略引擎**，主要针对高频或者低延时策略，事件驱动，**系统延迟在1-2微秒之间**
     > - **UFT引擎**，也叫**极速策略引擎**，主要针对超高频或者超低延时策略，事件驱动，**系统延迟在200纳秒之内**
-    ![CTA.jpg](./images/hft.jpg)
+    ![](./images/hft.jpg)
     
 * **完善的开发接口**
     > - **高效易用的数据接口**：每个策略都会有独立的上下文模块，上下文会自动缓存策略所需要的数据，策略直接调用即可。
@@ -44,7 +38,7 @@
     > - **语言支持全**：不论是`C++`开发的策略还是`wtpy`下开发的`python`策略，或者其他语言子框架下开发的策略，都在**统一的回测引擎**中统一回测。
     > - **回测效率高**：回测引擎采用`C++`开发，回测效率高，速度快。不管是`C++`策略还是`Python`策略，都能快速验证。
     > - **策略支持完备**：除了**CTA策略**、**SEL策略**可以回测，**HFT策略**、**UFT策略**和**执行单元**也能回测
-    ![backtest.jpg](./images/backtest.jpg)
+    ![](./images/backtest.jpg)
 
 * **高效的数据伺服**
     > - **本地数据伺服**：`WonderTrader`内置的存储引擎采用本地存储，在本地建立数据伺服，通过`udp`端口广播实时行情，实现`1+N`的服务结构，可以同时向多个组合盘提供无差别数据服务。专业数据供应商级别的架构，支持搭建多级分发体系，轻松应对各种需求场景。
@@ -57,18 +51,18 @@
     > - **账户资金风控**：和一般意义上的资金风控一致，主要控制账户资金的回撤等。
     > - **紧急人工介入**：提供一个紧急的人工介入的入口，通过上传一个配置文件，达到控制的目的。主要适用于单品种出现风险，如果全市场风险，人工停止系统即可。
     > - **离合器机制**：离合器机制依托于信号和执行分离的机制的，主要是如果策略或组合发生风险，通过离合器机制，直接断开信号执行。优点是不影响策略的逻辑，只断开信号的执行，可以继续观察策略在特定行情阶段的表现，和理论研究相互印证。
-    ![risk.jpg](./images/risk.jpg)
+    ![](./images/risk.jpg)
 
 * **强大的控制台**（[wtpy](https://github.com/wondertrader/wtpy)的监控服务）
     > - **组合盘运行监控**：可以查看实时运行日志、策略理论数据、交易通道数据等，并提供手动启停的入口。
-    ![monitor.jpg](./images/monitor.png)
+    ![](./images/monitor.png)
     > - **自动调度服务**：全自动调度定时任务（启动、停止、重启），支持按周设置任务重复，支持进程守护。
-    ![schedule.jpg](./images/schedule.jpg)
+    ![](./images/schedule.jpg)
     > - **实时事件通知**：监控服务接收组合盘推送的事件，然后转发给监控端，提示给用户。
     > - **回测查看器**：使用WtBtSnooper模块，可以进行回测数据的查看分析。
-    ![bt_summary.jpg](./images/bt_summary.png)
-    ![bt_details.jpg](./images/bt_details.png)
-    ![bt_signals.jpg](./images/bt_signals.png)
+    ![](./images/bt_summary.png)
+    ![](./images/bt_details.png)
+    ![](./images/bt_signals.png)
     > - **全自动远程部署(在建)**：全自动在线远程部署，提供回测环境、实盘环境等多种应用场景的自动化部署服务。
 
 #### 常见应用场景
@@ -80,7 +74,7 @@
 
 * **多账户交易**（**多产品配置**）
     对于不同行情周期下的策略组合，一般团队都会有一个当下最适应的策略组合。但是同一时期，团队可能会同时管理很多个账户，而其实这些账户用到的策略组合都是相同的。这个时候`WonderTrader`平台提供的**M+1+N执行架构**就能够完美的满足这个需求。
-    ![WonderTrader基本架构.jpg](./images/m1n.png)
+    ![](./images/m1n.png)
     - 首先，策略组合有自己的单位资金容量和对应的风险参数，以及各个策略的单位交易数量；
     - 其次，不同的账户有不同的资金规模和风险偏好，这个时候只需要根据这些要求配置不同的手数倍率即可；
         > 假如某组合盘P基本资金规模为500w，预期收益30%，最大回撤10%，收益风险比3:1；A账户使用该组合盘P交易，A账户的资金量为1000w，可以接受的最大回撤也是10%；B账户也使用该组合盘P交易，资金量也是1000w，但是可以接受的最大回撤为20%；这个时候因为A账户风险参数和基本盘一致，所以A账户的手数放大倍数为资金规模/基本盘的资金规模=1000w/500w=2倍；B账户因为可以忍受最大回撤20%，所以手数比例还要再放大一倍，即B账户可以配置4倍。
