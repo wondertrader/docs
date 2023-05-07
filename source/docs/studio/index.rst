@@ -5,5 +5,3 @@ WtStudio
     :maxdepth: 1
 
     main
-    irbox
-    dtbox
