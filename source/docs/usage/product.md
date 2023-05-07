@@ -1,6 +1,6 @@
 # 实盘完整攻略
 
-本文将完整的介绍一下，如果搭建一个可以直接用于生产环境的完整的流程。
+本文将完整的介绍一下，如何搭建一个可以直接用于生产环境的完整的流程。
 本文将以配置股票仿真盘为例，使用`DualThrust`策略，通过XTP行情通道落地数据，并通过XTP仿真交易通道来进行仿真交易。
 
 ### 安装wtpy
@@ -14,10 +14,7 @@
     ``` shell
     $ pip install wtpy --upgrade
     ```
-    或者直接下载whl文件到本地进行安装
-    阿里云镜像地址：<https://mirrors.aliyun.com/pypi/simple/wtpy/>
-    pipy地址：<https://pypi.org/project/wtpy/#files>
-
+    
 * 安装完成以后，输入以下命令，可以查看wtpy的版本号
     ``` shell
     $ pip show wtpy
@@ -27,7 +24,7 @@
 ---
 * 复制股票数据组件demo<https://github.com/wondertrader/wtpy/tree/master/demos/datakit_stk>
 
-* 打开配置文件`dtcfg.json`，配置XTP仿真行情通道
+* 打开配置文件`dtcfg.yaml`，配置XTP仿真行情通道
     ```yaml
     parsers:
     -   active: true
@@ -45,7 +42,7 @@
 
     ```
 
-* 打开配置文件`dtcfg.json`，配置数据落地目录
+* 打开配置文件`dtcfg.yaml`，配置数据落地目录
     ```yaml
     writer:
         module: WtDtStorage #数据存储模块
@@ -126,7 +123,7 @@
         filter: ''
     ```
 
-* 至此，`config.json`里面需要用户修改的修改项基本就修改完成了，其他的配置项保持即可。
+* 至此，`config.yaml`里面需要用户修改的修改项基本就修改完成了，其他的配置项保持即可。
 
 ### 修改策略
 ---

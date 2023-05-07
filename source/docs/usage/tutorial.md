@@ -11,9 +11,6 @@
     ``` shell
     $ pip install wtpy --upgrade
     ```
-    或者直接下载whl文件到本地进行安装
-    阿里云镜像地址：<https://mirrors.aliyun.com/pypi/simple/wtpy/>
-    pipy地址：<https://pypi.org/project/wtpy/>
 
 * 安装完成以后，输入以下命令，可以查看wtpy的版本号
     ``` shell
@@ -45,7 +42,6 @@
             holiday: ../common/holidays.json        #节假日列表
             hot: ../common/hots.json                #主力合约映射表
             session: ../common/sessions.json        #交易时间模板
-            uft-8: true        #基础文件是否是UFT8编码，这个一定要和文件编码统一！！！
         mode: csv   #回测历史数据存储，csv或者bin/wtp，其中bin/wtp都是一个意思
         store:
             module: WtDataStorage   #历史数据存储模块，如果是csv，该配置不生效

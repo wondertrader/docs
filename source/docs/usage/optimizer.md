@@ -1,7 +1,7 @@
 # 优化自己的策略
 
 ### 参数优化器简介
-之前针对**CTA策略**写了一个参数优化器**WtCtaOptimizer**，该模块主要通过**遍历参数**的方式，利用**multiprocessing**模块**并发启动多个进程**进行**历史回测**，然后汇总回测结果生成回测报表。
+`wtpy`针对**CTA策略**写了一个参数优化器**WtCtaOptimizer**，该模块主要通过**遍历参数**的方式，利用**multiprocessing**模块**并发启动多个进程**进行**历史回测**，然后汇总回测结果生成回测报表。
 参数优化器主要支持以下几种参数类型：
 * **固定参数**，即遍历的时候不需要更改的参数
 ```py
@@ -15,8 +15,6 @@ optimizer.add_mutable_param(name="k1", start_val=0.1, end_val=1.0, step_val=0.1,
 ```py
 optimizer.add_listed_param(name="code", val_list=["CFFEX.IF.HOT","CFFEX.IC.HOT"])
 ```
-
-**本文的主要目的就是演示`WtCtaOptimizer`的用法**。
 
 ### DualThrust介绍
 首先我们还是祭出**WonderTrader**惯用的`DualThrust`策略。
