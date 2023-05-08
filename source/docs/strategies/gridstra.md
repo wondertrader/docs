@@ -4,7 +4,7 @@
 
 ​	根据笔者对于网格策略的粗略了解，在具有多空交易的市场中，网格策略主要可以分为三种：做多、做空、和中性，而在只能做多的股票市场中，就只能使用做多的网格策略了。这里先简单说明一下只做多的网格策略的具体交易规则：首先决定网格格数，以及上涨与下跌时每格相比入场价格的涨跌幅，然后选择合适的入场价格入场做多或买入50%可用资金，当价格上涨或下跌超过一网格的涨跌幅后，仓位也随之变化，每上涨一格卖出一份头寸，每下跌一格买入一份头寸，具体交易规则可以参考下图：
 
-![](http://wt.f-sailors.cn/GridStra/1.png)
+![](./images/grid1.png)
 
 
 
@@ -70,7 +70,7 @@ class BaseCtaStrategy:
 
 第二步中创建的两个list示例如图：
 
-![](http://wt.f-sailors.cn/GridStra/2.png)
+![](./images/grid2.png)
 
 - 最终完整策略代码如下
 
@@ -246,7 +246,7 @@ https://pan.baidu.com/s/1DgULTifDaTS6a6VF36uvng?pwd=j8ym
 
 - 回测绩效
 
-![](http://wt.f-sailors.cn/GridStra/3.png)
+![](./images/grid3.png)
 
 #### 4.其他两种类型的网格策略
 

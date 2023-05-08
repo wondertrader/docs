@@ -173,4 +173,4 @@ https://pan.baidu.com/s/12WJd3tMRBdOgsDXiiBA_sg?pwd=wtpy
 
 - 回测绩效
 
-![](https://raw.githubusercontent.com/leoyinhaiqing/images/main/img/1666854625408.png)
+![](./images/rand1.png)
