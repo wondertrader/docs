@@ -2,7 +2,8 @@
 
 ### 系统登录和主界面
 在浏览器输入控制台的访问地址`http://部署地址:8099/console`，进入登录界面，输入用户名和密码，点击登录按钮即可进入主界面。
-* 控制台默认账号密码为`superman`/`Helloworld!`
+
+控制台默认账号密码为`superman`/`Helloworld!`
 
 ![](./images/console/1_login.png)
 
