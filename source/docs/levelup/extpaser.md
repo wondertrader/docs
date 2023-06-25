@@ -110,3 +110,5 @@ if __name__ == "__main__":
 - `wtpy/demos/datakit_fut/testExtParser.py`
 - `wtpy/demos/datakit_allday`
 - `wtpy/demos/test_extmodules`
+
+如果考虑使用C++实现新的行情解析模块，也可以参考文档[对接新的行情接口](../cpp/parser.md)。
