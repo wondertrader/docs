@@ -2,10 +2,14 @@
 
 ### 安装wtpy
 ---
-* 打开命令行，输入以下指令直接安装
-    ``` shell
+* 安装wtpy
+    打开命令行，输入以下指令直接安装
+    ```shell
     $ pip install wtpy --upgrade
     ```
+    或者直接下载whl文件到本地进行安装
+    阿里云镜像地址：<https://mirrors.aliyun.com/pypi/simple/wtpy/>
+    pipy地址：<https://pypi.org/project/wtpy>
 
 * 安装完成以后，输入以下命令，可以查看wtpy的版本号
     ``` shell
@@ -24,7 +28,7 @@
     * 期货高频实盘 [hft_fut](https://github.com/wondertrader/wtpy/tree/master/demos/hft_fut)
     * 期货sel回测 [sel_fut_bt](https://github.com/wondertrader/wtpy/tree/master/demos/sel_fut_bt)
 
-* 选择需要的demo，如期货回测demo
+* 选择需要的demo，如期货回测demo cta_fut_bt
 
 ### 修改demo的配置
 ---
