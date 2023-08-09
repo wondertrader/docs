@@ -1,18 +1,73 @@
 # 回测自己的策略
 
+以下仍以CTA为例，HFT和SEL也类似
+
+### 回测运行步骤
+---
+1. 根据策略配置文件（对于回测，`commodities.json`中一定要有回测的品种，`contracts.json`无所谓）
+   a. `common`基础文件：品种与合约须手动检查，与`runBT.py`对应；其他的可以用demo的模板，详解见**基础文件详解**章节
+   b. `storage`数据：存放历史数据
+2. 将编写的`策略.py`放入`Strategies`文件夹下
+3. 终端运行`runBT.py`
+4. `runBT.py`中的`WtBtAnalys`t模块会生成`绩效分析.xlsx`，可以据此分析优化策略（此模块目前仅适用CTA策略）
+
+### 文件配置
+---
+```
+common/  # 基础文件
+	commodities.json  # 品种列表（可以用ctp_loader更新）
+	contracts.json  # 合约列表（可以用ctp_loader更新）
+	holidays.json  # 节假日列表
+	hots.json  # 主力合约映射列表（主力合约才需要）
+	sessions.json  # 交易时间模板
+	fees.json  # 佣金配置文件
+storage/  # 数据
+	csv/
+		历史K线数据.csv
+	his/
+		ticks/
+			{交易所}/  # 如 SHFE/
+				{交易日}/  # 如 20220325/
+					{合约代码}.dsb  # 如 rb2210.dsb
+cta_fut_bt/  # 策略回测
+	runBT.py
+	configbt.yaml  # 环境配置
+	logcfgbt.yaml  # 日志配置
+	Strategies/  # 存放各个策略py文件
+		策略.py
+	BtLogs/  #（运行后生成）日志
+		Runner.log
+		Strategy_{策略实例名}.log
+	outputs_bt/   #（运行后生成）用于绩效分析的文件
+		{策略实例名}/
+```
+
+#### configbt.yaml
+configbt.yaml中的配置是默认值，提供一个模版，可以在`runBT.py`中通过代码覆盖
+
+```yaml
+replayer:
+    basefiles:
+        commodity: ../common/commodities.json   #品种列表
+        contract: ../common/contracts.json      #合约列表
+        holiday: ../common/holidays.json        #节假日列表
+        hot: ../common/hots.json                #主力合约映射表
+        session: ../common/sessions.json        #交易时间模板
+    stime: 201909010900         #回测开始时间，精确到分钟
+    etime: 201912011500         #回测结束时间，精确到分钟
+    fees: ../common/fees.json   #佣金配置文件
+    mode: csv   #回测历史数据存储，csv或者bin/wtp，其中bin/wtp都是一个意思
+    store:
+        module: WtDataStorage   #历史数据存储模块，如果是csv，该配置不生效
+        path: ../storage/       #历史数据存储跟目录
+env:
+    mocker: cta                 #回测引擎，cta/sel/hft/exec/uf
+```
+
 ### 编写自己的策略
 ---
-* 安装wtpy
-    打开命令行，输入以下指令直接安装
-    ```shell
-    $ pip install wtpy --upgrade
-    ```
-    或者直接下载whl文件到本地进行安装
-    阿里云镜像地址：<https://mirrors.aliyun.com/pypi/simple/wtpy/>
-    pipy地址：<https://pypi.org/project/wtpy>
-
 * 确定策略模型
-    我们选择一个知名度相对较高的R-Breaker模型来进行编写。模型的原理可以参考如下文档：
+    策略模块的API介绍见[API详解](https://wtdocs.readthedocs.io/zh/latest/docs/apis/index.html)章节。我们选择一个知名度相对较高的R-Breaker模型来进行编写。模型的原理可以参考如下文档：
     [解密并强化日内经典策略R-Breaker](https://zhuanlan.zhihu.com/p/86399960)
 
      R-Breaker的策略逻辑由以下4部分构成：      

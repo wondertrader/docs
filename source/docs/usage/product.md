@@ -3,22 +3,32 @@
 本文将完整的介绍一下，如何搭建一个可以直接用于生产环境的完整的流程。
 本文将以配置股票仿真盘为例，使用`DualThrust`策略，通过XTP行情通道落地数据，并通过XTP仿真交易通道来进行仿真交易。
 
-### 安装wtpy
+### 实盘运行步骤：
 ---
-* 安装python3.8以上的版本（32位、64位），安装完成以后输入以下命令，可以检查python的版本号
-    ``` shell
-    $ python
-    ```
+1. 根据策略配置文件
+2. 终端运行`datakit`组件`runDT.py`，一般在开盘前启动，如9:20，`datakit`负责在实盘中录制实时行情数据，存储在指定的数据目录中，同时通知策略进行接收
+3. 另一个终端运行实盘组件`run.py`
 
-* 打开命令行，输入以下指令直接安装
-    ``` shell
-    $ pip install wtpy --upgrade
-    ```
-    
-* 安装完成以后，输入以下命令，可以查看wtpy的版本号
-    ``` shell
-    $ pip show wtpy
-    ```
+### 文件配置
+---
+```
+common  # 基础文件
+    stk_comms.json  # 品种列表（交易所、品种类型、品种信息）
+    stocks.json  # 股票/ETF列表
+    holidays.json  # 节假日列表
+    stk_sessions.json  # 交易时间模板
+    fees_stk.json  # 佣金配置文件
+datakit_stk  # 数据组件
+    runDT.py  # 执行runDT.py启动数据组件
+    dtcfg.yaml  # 行情通道、广播端口、数据落地，原demo中分离出了mdparsers.yaml, statemonitor.yaml
+    logcfgdt.yaml
+cta_stk  # 实盘组件
+    run.py
+    Strategies
+        策略.py
+    config.yaml  # 原demo中分离出了filters.yaml, executers.yaml, tdparsers.yaml, tdtraders.yaml, actpolicy.yaml
+    logcfg.yaml
+```
 
 ### 准备数据组件
 ---
