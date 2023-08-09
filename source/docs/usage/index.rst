@@ -12,3 +12,4 @@
     hftstra
     selstra
     wtexecmon
+    common_files
