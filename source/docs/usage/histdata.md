@@ -263,8 +263,61 @@ date,time,open,high,low,close,volume,turnover
 - 期货主力合约，标准格式为`CFFEX.IF.HOT`，**WonderTrader**会根据一个主力合约规则文件自动映射到分月合约
 - 证券代码，股票的标准格式为`SSE.STK.600000`，指数的标准格式为`SZSE.IDX.399001`
 
-### 主力合约
-&emsp;&emsp;主力合约映射的规则，需要每天维护，**WonderTrader**会根据规则自动处理映射，用户只需要使用`.HOT`代码就可以了。主力合约规则文件如下：
+### 品种合约更新
+WonderTrader需要定期维护品种和合约信息，即`commodities.json`和`contracts.json`文件，来更新至最新期货品种。
+对此，WonderTrader提供了[ctp_loader](https://github.com/wondertrader/wtpy/tree/master/demos/ctp_loader)，从simnow拉取品种合约信息。
+注意：如果出现新的品种，需要自己在`map_future.ini`中更新相对应的键值，否则会导致更新的基础文件出现对应问题，造成运行引擎`WtEngine`初始化时报错！（同时需要wtpy==0.9.8）
+
+#### 文件配置
+```
+run.py
+config.ini
+map_future.ini  # 期货品种映射文件，期权对应map_futopt.ini
+```
+
+#### config.ini
+```ini
+[ctp]
+front=tcp://180.168.146.187:10201
+broker=9999
+user=simnow账号
+pass=simnow密码
+appid=simnow_client_test
+authcode=0000000000000000
+
+[config]
+path=../common/
+mask=1  # 1|2|4,1-fut期货,2-opt期权,4-stk股票
+mapfiles=map_future.ini,map_futopt.ini
+```
+
+#### map_future.ini
+
+```ini
+[Name]  # 代码与名称的映射
+IC=中证
+IF=沪深
+c=玉米
+a=豆一
+ag=沪银
+
+[Session]  # 品种与开收盘时间段的映射，对应common中的session.json文件
+CFFEX.IC=SD0930
+CFFEX.IF=SD0930
+DCE.c=FN2300
+SHFE.ag=FN0230
+```
+
+### 主力合约维护
+主力合约映射的规则，需要每天维护，即`hots.json`文件，**WonderTrader**会根据规则自动处理映射，用户只需要使用`.HOT`代码就可以了。
+
+对于主力合约规则文件的更新，WonderTrader提供了[hotpicker](https://github.com/wondertrader/wtpy/tree/master/demos/test_hotpicker)工具，有两种方式更新：
+
+1. 根据datakit的落地行情更新
+2. 从交易所官网爬取（不稳定）
+
+主力合约规则文件如下：
+
 ```json
 {
     "CFFEX": {
@@ -296,10 +349,144 @@ date,time,open,high,low,close,volume,turnover
 ```
 &emsp;&emsp;**WonderTrader**在读取主力合约的历史数据时，会优先读取直接对应的历史数据文件。如存储模式为文件时会先读取名为`CFFEX.IF_HOT.dsb`的文件，然后再根据主力合约规则读取分月合约的数据进行拼接。而如果存储模式为数据库，则会优先读取代码为`xx.HOT`的数据，然后再根据主力合约规则读取分月合约的数据。
 
-### 收盘作业
-&emsp;&emsp;顾名思义，在每个交易日结束以后，会对行情数据做一个盘后处理，这个处理的过程就叫做收盘作业。收盘作业主要包括以下工作：
-- 将实时高频数据按天按代码压缩存放(`tick`和`level2`高频数据)
-- 将当日的K线数据(`min1`和`min5`)合并到历史K线数据中
-- 根据当天最新的`tick`数据，生成当天的日K线数据并合并到历史日K线数据中
 
-&emsp;&emsp;正是因为有收盘作业这么一个机制，所以**WonderTrader**目前还不能很好的适应7×24小时交易的品种，如数字货币。所以**WonderTrader**对于数据货币的支持的最大的问题，还是7×24小时交易机制的数据处理问题。
+### datakit实时数据录制
+
+#### 工作逻辑
+1. 实时录制：`datakit`负责在实盘中录制实时行情数据，存储在指定的数据目录中，同时通知策略进行接收
+2. 收盘作业：在每个交易日结束以后，会对实时行情数据做一个盘后处理，默认是在每天的16点
+    - 将实时高频数据按天按代码压缩存放(`tick`和`level2`高频数据)
+    - 将当日的K线数据(`min1`和`min5`)合并到历史K线数据中
+    - 根据当天最新的`tick`数据，生成当天的日K线数据并合并到历史日K线数据中
+
+正是因为有收盘作业这么一个机制，所以**WonderTrader**目前还不能很好的适应7×24小时交易的品种，如数字货币。所以**WonderTrader**对于数据货币的支持的最大的问题，还是7×24小时交易机制的数据处理问题。
+
+demo：[datakit_fut](https://github.com/wondertrader/wtpy/tree/master/demos/datakit_fut)
+
+#### 文件配置
+```
+runDT.py
+dtcfg.yaml  # 环境配置
+mdparsers.yaml  # 行情通道配置，被dtcfg.yaml引用
+statemonitor.yaml  # 监控配置，被dtcfg.yaml引用
+logcfdgt.yaml  # 日志配置
+DtLogs/  #（运行后生成）日志
+CTPMDFlow/  #（运行后生成）
+```
+
+```
+指定的数据落地目录/  #（运行后生成）
+    rt/  # 实时数据
+        ticks/
+            {交易所}/  # 如 CFFEX/
+                /{合约代码}.dmb  # 如 IF2312.dmb
+        min1/
+            {交易所}/  # 如 CFFEX/
+                /{合约代码}.dmb  # 如 IF2312.dmb
+        min5/
+            {交易所}/  # 如 CFFEX/
+                /{合约代码}.dmb  # 如 IF2312.dmb
+    his/  # 历史数据（收盘作业生成）
+		    ticks/
+			      {交易所}/  # 如 CFFEX/
+				        {交易日}/  # 如 20230731/
+					          {合约代码}.dsb  # 如 IF2312.dsb
+		    min1/
+			      {交易所}/  # 如 CFFEX/
+					      {合约代码}.dsb  # 如 IF2312.dsb
+		    min5/
+			      {交易所}/  # 如 CFFEX/
+					      {合约代码}.dsb  # 如 IF2312.dsb
+		    day/
+			      {交易所}/  # 如 CFFEX/
+					      {合约代码}.dsb  # 如 IF2312.dsb
+    cache.dmb  # 临时缓存
+```
+
+#### dtcfg.yaml
+
+```yaml
+basefiles:  # 基础文件
+    commodity: ../common/commodities.json
+    contract: ../common/contracts.json
+    holiday: ../common/holidays.json
+    session: ../common/sessions.json
+    utf-8: true
+    
+writer:  # 数据落地配置
+    module: WtDataStorage #数据存储模块
+    async: false          #同步落地还是异步落地，期货推荐同步，股票推荐异步
+    groupsize: 20         #日志分组大小，主要用于控制日志输出，当订阅合约较多时，推荐1000以上，当订阅的合约数较少时，推荐100以内
+    path: ../FUT_Data     #数据存储的路径
+    savelog: false        #是否保存tick到csv
+    disabletick: false    #不保存tick数据，默认false
+    disablemin1: false    #不保存min1数据，默认false
+    disablemin5: false    #不保存min5数据，默认false
+    disableday: false     #不保存day数据，默认false
+    disablehis: false     #收盘作业不转储历史数据，默认false
+
+broadcaster:  # UDP广播器配置项
+    active: true
+    bport: 3997                 # UDP查询端口，主要是用于查询最新的快照
+    broadcast:                  # 广播配置
+    -   host: 255.255.255.255   # 广播地址，255.255.255.255会向整个局域网广播，但是受限于路由器
+        port: 9001              # 广播端口，接收端口要和广播端口一致
+        type: 2                 # 数据类型，固定为2
+
+parsers: mdparsers.yaml
+statemonitor: statemonitor.yaml  # 监控配置，设置监控时段（开收盘）
+```
+
+#### mdparsers.yaml
+
+```yaml
+parsers:  # 行情通道配置
+-   active: true
+    broker: '9999'
+    code: ''  # 要录制的合约代码，如果为空默认contracts.json中的全部，不为空则只录制指定的合约，注意这里须与contracts中的代码一致！如'CFFEX.IF2408, CFFEX.IF2403'
+    front: tcp://180.168.146.187:10211
+    id: parser
+    module: ParserCTP
+    user: 账号
+    pass: 密码
+```
+
+#### statemonitor.yaml（一般无需改动）
+
+```yaml
+FD0900:
+    closetime: 1515  # 关闭时间
+    inittime: 850  # 初始化时间
+    name: 期白0900
+    proctime: 1600  # 收盘作业时间
+FD0915:
+    closetime: 1530
+    inittime: 900
+    name: 期白0915
+    proctime: 1600
+FN0100:
+    closetime: 1515
+    inittime: 2050
+    name: 期夜0100
+    proctime: 1600
+FN0230:
+    closetime: 1515
+    inittime: 2050
+    name: 期夜0230
+    proctime: 1600
+FN2300:
+    closetime: 1515
+    inittime: 2050
+    name: 期夜2300
+    proctime: 1600
+FN2330:
+    closetime: 1515
+    inittime: 2050
+    name: 期夜2330
+    proctime: 1600
+SD0930:
+    closetime: 1515
+    inittime: 915
+    name: 股白0930
+    proctime: 1600
+```

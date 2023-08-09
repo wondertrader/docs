@@ -3,6 +3,7 @@
 ### 策略基本结构
 ---
 `WonderTrader`的策略非常简单，一共就4个接口函数`on_init`、`on_bar`、`on_tick`、`on_calculate`，核心逻辑只需要写入on_calculate里即可。
+下面以CTA策略为例做介绍，所有策略的[基类](https://github.com/wondertrader/wtpy/blob/master/wtpy/StrategyDefs.py)都类似，只是名字不同（BaseCtaStrategy、BaseHftStrategy、BaseSelStrategy）
 
 ```py
 from wtpy import Context
