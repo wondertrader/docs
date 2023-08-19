@@ -6,8 +6,6 @@
 
 **本文的主要目的就是帮助用户解决WonderTrader的源码的编译问题**。
 
-鉴于一般用户对于`windows`平台下搭建开发环境都比较熟悉，所以**本文将重点介绍linux下的开发环境的搭建**。
-
 ### 共享资源
 因为笔者长期在开发一线，平时在工作中会用到很多方便易用的工具，**WonderTrader**的开发中也有涉及。为了方便大家下载使用，本文中涉及到的一些好用的工具，笔者都统一放到百度云盘里共享出来，大家可以根据需要自行下载。文中会有多出涉及到从共享资源中下载文件，后面就不再赘述，统一用**共享资源**代称。
 
@@ -17,95 +15,105 @@
 
  ![image.png](../images/devenv/1.png)
 
-### `Linux`开发环境搭建
-操作系统：**Ubuntu Server 18.04.3 LTS**
-`Ubuntu 20`以后的秘钥加密算法做了调整，`SecureCRT 7`以前的版本都无法连接，所以本文以`Ubuntu 18.04.3 LTS`版本作为基本环境。笔者将使用`vmware`安装一个全新环境，从零开始演示开发环境如何搭建。
+### Linux本地开发环境搭建
+#### 1、系统准备
+**WonderTrader**官方的`Linux`开发环境为`Ubuntu Server 18.04 LTS`，可以使用`WSL`、虚拟机或者`Docker`进行系统初始化的工作。
 
-#### 1、使用`vmware`安装`ubuntu server 18.04.3 LTS`镜像
-镜像可以从**共享资源**中直接下载
+![image.png](../images/devenv/11.png)
 
-![image.png](../images/devenv/2.png)
-
-![image.png](../images/devenv/3.png)
-
-#### 2、虚拟机创建成功以后，自动开启，进入安装界面，然后一路默认
-![image.png](../images/devenv/4.png)
-
-#### 3、到了源配置界面，一定要把镜像改为国内镜像！
-这个很重要！不然安装特别慢！
-
-![image.png](../images/devenv/5.png)
-
-**推荐使用阿里云的源http://mirrors.aliyun.com/ubuntu**	
-
-![image.png](../images/devenv/6.png)
-
-#### 4、到了SSH配置界面，一定要选择`SSH server`，不然会无法使用`putty`或`SecureCRT`
-![image.png](../images/devenv/7.png)
-
-#### 5、到了组件选择界面，不用安装多余的组件，直接`done`
-![image.png](../images/devenv/8.png)
-
-#### 6、进入最后流程
-这里会有安全升级，可能耗时较长（如果前面没有配置国内镜像，这里的时间更是数倍）,也可以跳过安全升级
-
-![image.png](../images/devenv/9.png)
-
-#### 7、重启之后，进入控制台
-如果使用`SecureCRT`连接，在`vmware`中可以看一下虚拟机的ip地址，然后配置连接地址和账号密码进行连接
+`WSL`可以直接在应用商店，安装`Ubuntu 18.04.6 LTS`，如下图：
 
 ![image.png](../images/devenv/10.png)
 
-#### 8、安装开发环境
+如果使用`Docker`，可以直接使用以下命令拉取`ubuntu:18.04`的镜像：
 ```shell
-$ sudo apt-get install build-essential
+$ docker pull ubuntu:18.04
 ```
-![image.png](../images/devenv/11.png) 
+![image.png](../images/devenv/9.png)
 
-使用`gcc --version`查看`gcc`的版本号
+然后进入到docker容器中，命令如下：
+```shell
+$ docker run -it ubuntu:18.04 /bin/bash
+```
+
+#### 2、安装开发工具
+
+直接执行以下命令，安装`gcc8`，`ubuntu 18.04`，对应的`gcc8`的版本为`gcc8.4.0`
+```shell
+# 安装编译工具
+$ apt-get install -y git 
+$ apt-get install -y gcc-8 
+$ apt-get install -y g++-8 
+$ apt-get install -y cmake
+```
+
+由于`Ubuntu 18.04`默认安装的`gcc`版本是`7.5.0`，安装`cmake`的时候会自动安装`gcc7.5.0`，所以我们还需要对`gcc`命令符号做一个处理
+```shell
+# 将gcc符号链接到gcc8
+$ rm /usr/bin/gcc
+$ ln -s /usr/bin/gcc-8 /usr/bin/gcc
+$ ln -s /usr/bin/g++-8 /usr/bin/g++
+```
+
+使用`gcc --v`查看`gcc`的版本号
 
 ![image.png](../images/devenv/12.png)
 
-安装`cmake`
-
-![image.png](../images/devenv/13.png)
 
 使用`cmake --version`查看`cmake`的版本号
 
 ![image.png](../images/devenv/14.png)
 
-安装7z解压工具
+安装`7z`解压工具，用于解压预编译的依赖包
 ```shell
 $ sudo apt-get install p7zip-full
 ```
 ![image.png](../images/devenv/15.png)
 
-#### 9、从`共享资源`中下载`mydes_linux.7z`并上传到虚拟机
-可以使用使用`SecureFX`（**共享资源**中的`SecureCRT`自带`SecureFX`）上传到虚拟机，如下图：
+#### 3、从`共享资源`中下载`mydes_gcc8.4.0.7z`并上传到linux
+
+* 如果是通过terminal工具连接的话，推荐使用WindTerm上传
 
 ![image.png](../images/devenv/16.png)
 
-#### 10、将`mydeps_linux.7z`解压到`/home`下
+* 如果是WSL的话，可以直接访问Windows的文件系统
+
+![image.png](../images/devenv/13.png)
+
+
+* 或者直接使用scp命令行上传
 ```shell
-$ sudo 7z x mydeps_linux.7z /home
+$ scp -r mydes_gcc8.4.0.7z root@192.168.61.128:/home
 ```
 
-#### 11、拉取`WonderTrader`的源码
+#### 4、将`mydes_gcc8.4.0.7z`解压到`/home`下
 ```shell
+$ sudo 7za x mydes_gcc8.4.0.7z /home
+```
+
+#### 5、拉取`WonderTrader`的源码
+```shell
+$ cd /home
 $ sudo git clone https://github.com/wondertrader/wondertrader.git
 ```
-![image.png](../images/devenv/17.png)
 
-#### 12、进入`src`目录，执行编译脚本
+#### 6、进入`src`目录，执行编译脚本
 ```shell
-$ sudo ./build_release.sh
+$ bash build_release.sh
 ```
-编译完成以后，使用`SecureFX`就可以直接从`src`目录下的`build/bin`中下载需要的文件即可
+编译成功截图如下：
 
 ![image.png](../images/devenv/18.png)
 
+编译完成以后，就可以直接从`src`目录下的`build/bin`中下载需要的文件即可。
 
-### `Windows`开发环境搭建
+#### 7、复制二进制文件到wtpy
+如果要将`linux`下编译的二进制文件，复制到`wtpy`中，还可以使用文件复制脚本`copy_bins_linux.sh`，命令行如下：
+```shell
+$ bash copy_bins_linux.sh /home/wpy
+```
+
+### Windows开发环境搭建
 #### 1、安装`vs2017`社区版
 首先下载`vs2017`的安装器，下载地址如下：
 [https://visualstudio.microsoft.com/zh-hans/vs/older-downloads/](https://visualstudio.microsoft.com/zh-hans/vs/older-downloads/)
@@ -157,3 +165,55 @@ URL设置为:<https://github.com/wondertrader/wondertrader.git>
 ![image.png](../images/devenv/28.png)
 
 ![image.png](../images/devenv/29.png)
+
+
+#### 7、复制到wtpy
+进入到`wondertrader`目录，双击运行`copy_bins_win.bat`批处理文件，就可以自动将编译好的二进制文件复制到wtpy对应的目录下了，运行截图如下：
+
+![image.png](../images/devenv/17.png)
+
+
+### Docker开发环境搭建
+**WonderTrader**的`0.9.8`版本，将`C++`标准升级到了`C++17`。主要因为`0.9.8`版本，引入了一个新的`hash`容器`ankerl::unordered_dense`，该容器相比以前的`robin_map`，性能可以提升**1/3**左右，但是该容器必须要求`C++17`以上的标准。
+鉴于此，**WonderTrader**的标准也升级到了`C++17`。但是原来的编译环境`Centos7` + `gcc 4.8.5`，只支持`C++11`，`gcc8`以上才支持`C++17`。经过测试，`Centos7`下的的`gcc8`的版本为`gcc8.3.1`，该版本下编译还是不成功，而`Ubuntu 18.04`下的`gcc8`为`gcc8.4.0`，该版本下就能够编译成功。
+由于`gcc`版本的要求，开发环境搭建会变得更加复杂，为了方便大家使用，就提供了内置的`Dockerfile`。
+在`wondertrader/docker`下，有两个`Dockerfile`：
+- Dockerfile：
+    * 这个`dockerfile`直接拉取`dockerhub`上提交的`wondertrader`镜像，镜像大小约500M
+    * `wondertrader`镜像，基于`ubuntu18.04`进行构建，安装了`gcc8.4.0`等编译工具
+    * 并且自动从`gitee上`拉取源码
+    * 基于该文件构建镜像可以使用命令：` docker build -t yourimagename -f Dockerfile .`
+    * 构建完成以后，要启动容器，可以使用命令： `docker run -it yourimagename /bin/bash`
+- Dockerfile_ubt:
+    * 这个`dockerfile`直接基于`ubuntu18.04`镜像构建，镜像大小约66M，拉取速度较快
+    * 拉取完以后，再安装`gcc8.4.0`等编译工具
+    * 并且自动从`gitee上`拉取源码
+    * 基于该文件构建镜像可以使用命令：`docker build -t yourimagename -f Dockerfile_ubt .`
+    * 构建完成以后，要启动容器，可以使用命令：`docker run -it yourimagename /bin/bash`
+
+#### 1、构建自己的本地镜像
+用户可以根据自己的需要，通过这两个`Dockerfile`直接构建自己的开发镜像，命令行如下：
+```shell
+$ docker build -t wtcpp -f Dockerfile .
+```
+
+运行截图如下：
+
+![image.png](../images/devenv/2.png)
+
+#### 2、运行容器
+本地镜像构建好了，就可以使用以下命令运行容器了
+```shell
+$ docker run -it mycpp /bin/bash
+```
+
+运行截图如下：
+![image.png](../images/devenv/3.png)
+
+#### 3、编译构建
+将目录转到/home/wondertrader/src，执行编译脚本即可
+```shell
+$ cd /home/wondertrader/src
+$ bash build_release.sh
+```
+
