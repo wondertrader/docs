@@ -13,23 +13,23 @@
 
  提取码: **d6bh**
 
- ![image.png](../images/devenv/1.png)
+ ![](../images/devenv/1.png)
 
 ### Linux本地开发环境搭建
 #### 1、系统准备
 **WonderTrader**官方的`Linux`开发环境为`Ubuntu Server 18.04 LTS`，可以使用`WSL`、虚拟机或者`Docker`进行系统初始化的工作。
 
-![image.png](../images/devenv/11.png)
+![](../images/devenv/11.png)
 
 `WSL`可以直接在应用商店，安装`Ubuntu 18.04.6 LTS`，如下图：
 
-![image.png](../images/devenv/10.png)
+![](../images/devenv/10.png)
 
 如果使用`Docker`，可以直接使用以下命令拉取`ubuntu:18.04`的镜像：
 ```shell
 $ docker pull ubuntu:18.04
 ```
-![image.png](../images/devenv/9.png)
+![](../images/devenv/9.png)
 
 然后进入到docker容器中，命令如下：
 ```shell
@@ -57,28 +57,28 @@ $ ln -s /usr/bin/g++-8 /usr/bin/g++
 
 使用`gcc --v`查看`gcc`的版本号
 
-![image.png](../images/devenv/12.png)
+![](../images/devenv/12.png)
 
 
 使用`cmake --version`查看`cmake`的版本号
 
-![image.png](../images/devenv/14.png)
+![](../images/devenv/14.png)
 
 安装`7z`解压工具，用于解压预编译的依赖包
 ```shell
 $ sudo apt-get install p7zip-full
 ```
-![image.png](../images/devenv/15.png)
+![](../images/devenv/15.png)
 
 #### 3、从`共享资源`中下载`mydes_gcc8.4.0.7z`并上传到linux
 
 * 如果是通过terminal工具连接的话，推荐使用WindTerm上传
 
-![image.png](../images/devenv/16.png)
+![](../images/devenv/16.png)
 
 * 如果是WSL的话，可以直接访问Windows的文件系统
 
-![image.png](../images/devenv/13.png)
+![](../images/devenv/13.png)
 
 
 * 或者直接使用scp命令行上传
@@ -103,7 +103,7 @@ $ bash build_release.sh
 ```
 编译成功截图如下：
 
-![image.png](../images/devenv/18.png)
+![](../images/devenv/18.png)
 
 编译完成以后，就可以直接从`src`目录下的`build/bin`中下载需要的文件即可。
 
@@ -118,21 +118,21 @@ $ bash copy_bins_linux.sh /home/wpy
 首先下载`vs2017`的安装器，下载地址如下：
 [https://visualstudio.microsoft.com/zh-hans/vs/older-downloads/](https://visualstudio.microsoft.com/zh-hans/vs/older-downloads/)
 
-![image.png](../images/devenv/19.png)
+![](../images/devenv/19.png)
 
-![image.png](../images/devenv/20.png)
+![](../images/devenv/20.png)
 
 或者直接从**共享资源**中直接下载该安装器
 
 #### 2、从`共享资源`中下载`vc141deps_win.7z`，并解压到`E:/vc141depends`目录
-![image.png](../images/devenv/21.png)
+![](../images/devenv/21.png)
 
 #### 3、配置环境变量
 
 从**共享资源**中下载环境变量编辑器`RapidEE`到本地，解压以后运行。
 新建一个名为`MyDepends141`的环境变量，并将值设置为依赖库解压目录`E:/vc141depends`
 
-![image.png](../images/devenv/22.png)
+![](../images/devenv/22.png)
 
 设置好了以后，保存环境变量，即可生效，如果没有生效，可以重启电脑。`win10`下要注意一下使用**管理员身份运行**`RapidEE`，不然保存可能会失败！
 
@@ -140,37 +140,37 @@ $ bash copy_bins_linux.sh /home/wpy
 
 下载git并安装：[https://git-scm.com/download/win](https://git-scm.com/download/win)
 
-![image.png](../images/devenv/23.png)
+![](../images/devenv/23.png)
 
 下载tortoisegit并安装：[https://tortoisegit.org/download/](https://tortoisegit.org/download/)
 
-![image.png](../images/devenv/24.png)
+![](../images/devenv/24.png)
 
 #### 5、下载代码
 选择一个目录，然后右键点击该目录，选择“**Git克隆**”菜单
 
-![image.png](../images/devenv/25.png)
+![](../images/devenv/25.png)
 
 URL设置为:<https://github.com/wondertrader/wondertrader.git>
 
-![image.png](../images/devenv/26.png)
+![](../images/devenv/26.png)
 
 #### 6、编译代码
 进入到`wondertrader`的`src`目录下
 
-![image.png](../images/devenv/27.png)
+![](../images/devenv/27.png)
 
 双击运行`wondertrader.sln`，打开以后在解决方案上右键点击，选择“**生成解决方案**”就进入了编译过程
 
-![image.png](../images/devenv/28.png)
+![](../images/devenv/28.png)
 
-![image.png](../images/devenv/29.png)
+![](../images/devenv/29.png)
 
 
 #### 7、复制到wtpy
 进入到`wondertrader`目录，双击运行`copy_bins_win.bat`批处理文件，就可以自动将编译好的二进制文件复制到wtpy对应的目录下了，运行截图如下：
 
-![image.png](../images/devenv/17.png)
+![](../images/devenv/17.png)
 
 
 ### Docker开发环境搭建
@@ -199,7 +199,7 @@ $ docker build -t wtcpp -f Dockerfile .
 
 运行截图如下：
 
-![image.png](../images/devenv/2.png)
+![](../images/devenv/2.png)
 
 #### 2、运行容器
 本地镜像构建好了，就可以使用以下命令运行容器了
@@ -208,7 +208,7 @@ $ docker run -it mycpp /bin/bash
 ```
 
 运行截图如下：
-![image.png](../images/devenv/3.png)
+![](../images/devenv/3.png)
 
 #### 3、编译构建
 将目录转到/home/wondertrader/src，执行编译脚本即可
