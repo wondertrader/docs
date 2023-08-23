@@ -39,3 +39,40 @@ WonderTrader一共有四种交易引擎：
 从功能上来说，尤其对于CTA引擎和SEL引擎，组合延伸了持仓、成交、资金等概念，还可以基于组合做一层理论上的风控。
 
 这里要注意区分一下：多个子策略并不是共享了组合的持仓数据，而是组合汇总了子策略的持仓数据。
+
+
+### 如何使用openctp
+答：
+openctp主要提供了行情接口和交易接口，因为要使用openctp，主要是修改parsers和traders的配置。
+openctp的环境，可以参考此页面： <http://121.37.80.177:50080/detail.html>
+parsers的配置可以参考以下配置：
+```yaml
+parsers:
+-   active: true
+    broker: '9999'
+    code: ''
+    front: tcp://210.14.72.14:4402
+    id: parser
+    module: ParserCTP
+    pass: test
+    user: test
+    # 如果要使用openctp，启用该配置项即可
+    ctpmodule: tts_thostmduserapi_se
+
+```
+traders的配置可以参考以下配置：
+```yaml
+traders:
+-   active: true
+    id: openctp          # id
+    module: TraderCTP   # 模块文件名，win下会自动转成xxx.dll，linux会自动转成libxxx.so
+    savedata: true      # 是否保存数据，如果为true，会将接口拉取到的成交、订单、资金和持仓都写到本地文件中
+    front: tcp://210.14.72.14:4400  #VIP
+    broker: '9000'
+    appid: empty
+    authcode: empty    
+    pass: test
+    user: test
+    quick: true                       # 是否订阅快速私有流，如果为true，则不会接受上次之前的私有流，这个一定要为true！！！
+    ctpmodule: tts_thosttraderapi_se    # ctp模块名，如果需要使用其他仿制CTP模块，使用该配置项直接将仿制的CTP模块传给TraderCTP即可
+```
