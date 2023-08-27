@@ -43,7 +43,7 @@ WonderTrader一共有四种交易引擎：
 
 ### 如何使用openctp
 答：
-openctp主要提供了行情接口和交易接口，因为要使用openctp，主要是修改parsers和traders的配置。
+openctp主要提供了行情接口和交易接口，要使用openctp，主要是修改parsers和traders的配置。
 
 openctp的环境，可以参考此页面： <http://121.37.80.177:50080/detail.html>
 
