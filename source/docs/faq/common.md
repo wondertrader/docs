@@ -83,7 +83,7 @@ traders:
 答：
 详细流程可以参考文档[实盘完整攻略](../usage/product)。这里以期货CTA为例，梳理一下流程步骤：
 * 1、配置CTPLoader，并拉取最新的合约列表和品种列表，参考demo: [wtpy/demos/ctp_loader](https://gitee.com/wondertrader/wtpy/tree/master/demos/ctp_loader)
-* 2、配置HotPicker，并拉取最新的主力换月规则，参考demo: [wtpy/demos/test_hotpicker](https://gitee.com/wondertrader/wtpy/tree/master/demos/test_hotpicker)。（如果不xu需要使用主力合约如CFFEX.IF.HOT，可以跳过该步骤）
+* 2、配置HotPicker，并拉取最新的主力换月规则，参考demo: [wtpy/demos/test_hotpicker](https://gitee.com/wondertrader/wtpy/tree/master/demos/test_hotpicker)。（如果不需要使用主力合约如CFFEX.IF.HOT，可以跳过该步骤）
 * 3、配置datakit并运行，参考demo: [datakit_fut](https://gitee.com/wondertrader/wtpy/tree/master/demos/datakit_fut)
 * 4、配置交易组合，运行策略，参考demo: [wtpy/demos/cta_fut](https://gitee.com/wondertrader/wtpy/tree/master/demos/cta_fut)
 
