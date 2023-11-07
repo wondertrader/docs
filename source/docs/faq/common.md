@@ -90,3 +90,25 @@ traders:
 注意事项：
 * 1、datakit的配置文件dtcfg.yaml中的broadcaster配置的端口必须要和交易组合中的tdparsers.yaml中的端口一致
 * 2、交易组合中config.yaml配置的storage的数据目录必须要和datakit中的一致
+
+### 如何理解CTA引擎中的下单接口
+答：
+CTA引擎的下单接口，汇总起来包含以下几个接口：
+```python     
+def stra_enter_long(self, stdCode:str, qty:float, usertag:str = "", limitprice:float = 0.0, stopprice:float = 0.0):
+
+def stra_exit_long(self, stdCode:str, qty:float, usertag:str = "", limitprice:float = 0.0, stopprice:float = 0.0):
+
+def stra_enter_short(self, stdCode:str, qty:float, usertag:str = "", limitprice:float = 0.0, stopprice:float = 0.0):
+
+def stra_exit_short(self, stdCode:str, qty:float, usertag:str = "", limitprice:float = 0.0, stopprice:float = 0.0):
+```
+四个接口分别开多、平多、开空、平空四种操作。接口的实现，接口用法和MultiCharts的buy/sell/sellShort/butToCover相同，可以概括如下：
+* 开多N手——当持仓大于等于0时，则直接开多N手；当持仓小于0（持有空头）时，则先平掉空头持仓，再开多N手
+* 平多N手——当持仓大于等于N时，则平掉N手多头；当持仓小于N时，则平掉全部多头持仓
+* 开空N手——当持仓小于等于0（持有空头）时，则直接开空N手；当持仓大于0时，则先平掉多头持仓，再开空N手
+* 平空N手——当空持仓大于等于N时，则平掉N手空头；当空头持仓小于N时，则平掉全部空头持仓
+
+如果设置了limitprice和stopprice，则下单指令变成了条件单。所谓条件单，即需要满足条件才会触发信号。CTA引擎的条件单，每次on_calc调用之前，都会清除掉之前设置的条件单，即条件单的声明周期仅在下一根主K线的bar闭合之前。这样的机制，可以将策略简化到只需要实现on_calc就可以了，这个机制也是参考了MultiCharts来实现的。
+
+限价limitprice和止价stopprice从某种角度来说，更像是交易信号的二次确认。以买入（开多或者平空）为例，当最新价小于等于limitprice，或者当最新价大于等于stopprice，才会触发买入信号。如果一个条件单同时设置了limitprice和stopprice，只有limitprice会生效。
